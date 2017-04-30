@@ -1,4 +1,4 @@
-Kathleen Sellick
-kas.sellick@gmail.com
-Hunting for exoplanets with Kepler, supervisor: Dr Matt Hilton
-Just to improve coding in general, be able to do more complex operations
+Name: Kathleen Sellick
+Email: kas.sellick@gmail.com
+Project: Hunting for exoplanets with Kepler, supervisor: Dr Matt Hilton
+Goals: Just to improve my coding skills in general and be able to do more complex operations.
