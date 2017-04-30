@@ -1,0 +1,174 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Apr 30 12:23:47 2017
+
+@author: Kas
+"""
+
+from scipy.integrate import simps
+import numpy as np
+from matplotlib import pyplot as plt
+
+
+def vec(n):
+    x=np.linspace(0,np.pi/2,n)
+    return x
+
+def f1(n):
+    v=vec(n)
+    return np.cos(v)
+
+def simple_integral(n):
+    dx=np.pi/2/(n-1)
+    y=f1(n)
+    tot=y.sum()*dx
+    return tot
+
+#Question 3:
+print("")
+print("Question 3:")
+print("")
+
+m=[10,30,100,300,1000,200000]
+for n in m:
+    simple=simple_integral(n)
+    err=abs(simple-1)
+    alpha=np.log(err)/(np.log(n))
+    print("The simple integrator with " + repr(n) + " points has value " + repr(simple) + " with an error of " + repr(err) + " and alpha value of " + repr(alpha))
+    print("")
+    
+av_alpha=(-1.0719797372442512-1.0637222440313732-1.0508476521059975-1.041919821145741-1.0348631445404426)/5
+print("The average alpha value is " + repr(av_alpha))
+
+
+#Question 4:
+print("")
+print("Question 4:")
+print("")
+x=np.arange(11)
+print("Array: ",x)
+xodd=x[1::2]
+print("Only odd numbers from array: ",xodd)
+xeven=x[2:-2:2]
+print("Only even numbers from array skipping first and last elements: ",xeven)
+    
+    
+#Question 5
+print("")
+print ("Question 5:")
+print("")
+
+m1=[11,31,101,301,1001]
+
+def f2(x1):
+    return np.cos(x1)
+for n in m1:
+    x1=np.linspace(0,np.pi/2,n)
+    y1 = f2(x1)
+    I1 = simps(y1,x1)
+    err=abs(I1-1)
+    alpha=np.log(err)/(np.log(n))
+    print(alpha)
+    print ("The value of Simpson's integral with " + repr(n) + " points is " + repr(I1) + " with an error of " + repr(err))
+    print("")
+
+av_alpha2=(-5.25211666293-4.94791859398-4.72518052419-4.5910757113-4.48992240413)/5
+print("The average alpha value in the Simpson case is " + repr(av_alpha2))
+print("")
+
+print("To get the same accuracy as Simpson's rule for 11 points, the  simple integration needs more than 200000 points")
+
+
+#Question 6:
+print("")
+print("Question 6:")
+print("")
+print("See graph")
+
+
+m=[11,31,101,301,1001,3001,10001,30001,100001]
+m=np.array(m)
+simpson_err=np.zeros(m.size)
+simple_err=np.zeros(m.size)
+for ii in range(m.size):
+    n=m[ii]
+    x1=np.linspace(0,np.pi/2,n)
+    y1 = f2(x1)
+    I1 = simps(y1,x1)
+    err=abs(I1-1)
+    simpson_err[ii]=err
+    simple_err[ii]=np.abs(simple_integral(n)-1)
+plt.plot(m,simple_err)
+plt.plot(m,simpson_err)
+ax=plt.gca()
+ax.set_yscale("log")
+ax.set_xscale("log")
+plt.xlabel("Number of points")
+plt.ylabel("Error")
+plt.title("Graph of error versus number of points for both" + "\n" + "the simple integration and Simpson's integration method")
+plt.show()
+
+
+#Bonus question:
+print("")
+print("Question B1:")
+print("")
+print("The integrals are not (almmost) identical because the quad function focusses most of its effort on where the function being integrated is changing quickly in the integration range. The slope of the function being integrated effects how the quad function treats the step size of the integration of the function in order to maximize efficiency. It thus occurs that one may get slightly different answers from one region to the next even if they're analytically the same.")
+
+
+print("")
+print("Question B2:")
+print("")
+print("In order to fix the problem we need to make sure that the numerical integrator hits the peak of the guassian, thus it needs to be integrated in two parts, from the first limit to the peak and from the peak to the second limit. We know the peak in this case is at 0. The correction is shown below.")
+print("")
+
+
+import scipy.integrate as quad
+
+
+def mygauss(x,cent=0,sig=0.1):
+    y=np.exp(-0.5*(x-cent)**2/sig**2)
+    y=1+y/np.sqrt(2*np.pi*sig**2)
+    return y
+
+#print (__name__)
+
+if __name__ == "__main__":
+
+    dx=0.1
+    x=np.arange(-5,5,dx)
+    y=mygauss(x,0,1)
+    y2=mygauss(x,sig=1)
+    #print ('y total is ' +repr(y.sum()*dx))
+    
+    #plt.plot(x,y)
+    #plt.show()
+
+#val,err=quad.quad(mygauss,-20,20)
+#print (val)
+#val,err=quad.quad(mygauss,-25,15)
+#print (val)
+
+
+val,err=quad.quad(mygauss,-20,0)
+val2,err2=quad.quad(mygauss,0,20)
+print ("The new value for the first corrected integral is " + repr(val+val2))
+print("")
+val,err=quad.quad(mygauss,-25,0)
+val2,err2=quad.quad(mygauss,0,15)
+print ("The new value for the second corrected integral is " + repr(val+val2))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
